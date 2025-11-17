@@ -1,19 +1,18 @@
-import { dehydrate, HydrationBoundary } from '@tanstack/react-query'
-import { trpc, getQueryClient } from '../trpc/server'
-import { Suspense } from 'react'
-import ClientPage from './client'
-const Page = async () => {
-	const queryClient = getQueryClient()
-	void queryClient.prefetchQuery(
-		trpc.createAI.queryOptions({ text: 'Shokhrukh' })
-	)
+'use client'
 
+import { Button } from '@/components/ui/button'
+import { useTRPC } from '@/trpc/client'
+import { useMutation } from '@tanstack/react-query'
+
+const Page = () => {
+	const trpc = useTRPC()
+	const invoke = useMutation(trpc.invoke.mutationOptions({}))
 	return (
-		<HydrationBoundary state={dehydrate(queryClient)}>
-			<Suspense fallback={<p>Loading...</p>}>
-				<ClientPage />
-			</Suspense>
-		</HydrationBoundary>
+		<div className='p-4 max-w-7xl mx-auto'>
+			<Button onClick={() => invoke.mutate({ text: 'Shokhrukh' })}>
+				Invoke background jib
+			</Button>
+		</div>
 	)
 }
 
